@@ -1,0 +1,12 @@
+[submodule "backend"]
+	path = backend
+	url = https://github.com/EvilGia81/TestAI.git
+	branch = backend
+[submodule "frontend"]
+	path = frontend
+	url = https://github.com/EvilGia81/TestAI.git
+	branch = frontend
+[submodule "cli"]
+	path = cli
+	url = https://github.com/EvilGia81/TestAI.git
+	branch = cli
