@@ -1,0 +1,11 @@
+{
+  "name": "snip-bundle",
+  "version": "1.0.0",
+  "description": "Snip URL shortener — self-contained bundle (generated output, do not hand-edit)",
+  "scripts": {
+    "start": "bun server.js"
+  },
+  "engines": {
+    "bun": ">=1.0.0"
+  }
+}
