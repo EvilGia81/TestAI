@@ -7,8 +7,51 @@ Each layer lives on its own Git branch and is mounted here as a submodule so you
 snip/
 ├── backend/    ← branch: backend   (Node/Express REST API + SQLite)
 ├── frontend/   ← branch: frontend  (Angular 19 SPA)
-└── cli/        ← branch: cli       (zero-dep Node CLI, CommonJS)
+├── cli/        ← branch: cli       (zero-dep Node CLI, CommonJS)
+├── bundle/     ← branch: bundle    (GENERATED — do not hand-edit, see below)
+└── scripts/
+    └── build-bundle.mjs            (assembles the bundle branch)
 ```
+
+---
+
+## Bundle (generated release artefact)
+
+The `bundle/` submodule tracks the `bundle` branch which is **entirely generated output**.
+Every file in it is produced by `scripts/build-bundle.mjs` — do not edit it by hand.
+
+### What the bundle contains
+
+| File | Source |
+|---|---|
+| `server.js` | copied verbatim from `backend/server.js` |
+| `cli.js` | copied verbatim from `cli/cli.js` |
+| `public/` | Angular production build (`frontend/dist/snip-frontend/browser/`) |
+| `.env` | `PUBLIC_DIR=./public` (Bun auto-loads; enables static-file serving) |
+| `package.json` | `"start": "bun server.js"`, no `"type"` field (keeps cli.js CommonJS) |
+| `Dockerfile` | `FROM oven/bun:1-alpine`, port 3000 |
+| `.dockerignore` | excludes `.git` and `*.md` |
+| `railway.json` | selects the `DOCKERFILE` builder |
+
+### Running the bundle
+
+```sh
+cd bundle
+bun server.js          # serves API on :3000 AND the Angular SPA from public/
+node cli.js ls         # CLI still works — no bundler needed
+```
+
+### Rebuilding
+
+```sh
+# Assemble only (local check, no push):
+node scripts/build-bundle.mjs        # or: bun scripts/build-bundle.mjs
+
+# Assemble + push both bundle and main:
+node scripts/build-bundle.mjs --push
+```
+
+The script is a **safe no-op** when sources have not changed — it checks the staged diff before every commit and skips it when the index is empty.
 
 ---
 
