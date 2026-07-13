@@ -1,0 +1,52 @@
+<main class="container">
+  <h1>Snip</h1>
+
+  <section class="card">
+    <h2>Shorten a URL</h2>
+    <form (ngSubmit)="submit()">
+      <div class="row">
+        <input
+          [(ngModel)]="urlInput"
+          name="url"
+          type="text"
+          placeholder="https://example.com/long-url"
+          [disabled]="submitting()"
+          required
+        />
+        <button type="submit" [disabled]="submitting()">Shorten</button>
+      </div>
+
+      @if (error()) {
+        <p class="error">{{ error() }}</p>
+      }
+      @if (newLink()) {
+        <p class="success">
+          Short link:
+          <a [href]="newLink()!.shortUrl" target="_blank" rel="noopener">{{ newLink()!.shortUrl }}</a>
+        </p>
+      }
+    </form>
+  </section>
+
+  <section class="card">
+    <h2>All links</h2>
+    @if (links().length === 0) {
+      <p class="muted">No links yet.</p>
+    } @else {
+      <table>
+        <thead>
+          <tr><th>Code</th><th>Original URL</th><th>Hits</th></tr>
+        </thead>
+        <tbody>
+          @for (link of links(); track link.code) {
+            <tr>
+              <td><a [href]="link.shortUrl" target="_blank" rel="noopener">{{ link.code }}</a></td>
+              <td class="url-cell">{{ link.url }}</td>
+              <td class="hits">{{ link.hits }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </section>
+</main>
